@@ -6,6 +6,11 @@ p.extensions.vcpkg = p.extensions.vcpkg or {
 }
 local m = p.extensions.vcpkg
 
+newoption {
+	trigger     = "vcpkg-fast",
+	description = "Turns on fast mode that tries to invoke vcpkg only when it's absolutely necessary.",
+}
+
 p.api.register {
 	name   = "vcpkg_tool_version",
 	scope  = "project",

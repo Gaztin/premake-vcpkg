@@ -6,6 +6,10 @@ end
 local p = premake
 local m = premake.extensions.vcpkg
 
+function m.inFastMode()
+	return _OPTIONS["vcpkg-fast"] ~= nil
+end
+
 function m.getToolVersion(prj)
 	return prj.vcpkg_tool_version or m._VCPKG_TOOL_VERSION
 end
@@ -22,7 +26,9 @@ function m.isInstalled(prj)
 	local program_path   = path.join(install_dir, "vcpkg.exe")
 	local program_exists = os.isfile(program_path)
 	local is_installed   = false
-	if program_exists then
+	if m.inFastMode() then
+		is_installed = program_exists
+	elseif program_exists then
 		local result, exit_code = os.outputof("\""..program_path.."\" version")
 		if exit_code == 0 then
 			local lines                  = result:explode("\n")
