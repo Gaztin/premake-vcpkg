@@ -4,10 +4,15 @@ for _,filepath in ipairs(manifest) do
 end
 
 local p = premake
-local m = premake.extensions.vcpkg
+local m = p.extensions.vcpkg
 
 function m.inFastMode()
 	return _OPTIONS["vcpkg-fast"] ~= nil
+end
+
+function m.expandPackage(package)
+	local p, v = string.match(package, "^(.*):(.*)$")
+	return p, v
 end
 
 function m.getToolVersion(prj)

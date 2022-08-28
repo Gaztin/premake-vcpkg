@@ -24,3 +24,17 @@ p.api.register {
 	kind   = "directory",
 	tokens = true,
 }
+
+p.api.register {
+	name    = "vcpkg_packages",
+	scope   = "config",
+	kind    = "list:string",
+	allowed = function(input)
+		local name, version = m.expandPackage(input)
+		if not name or not version then
+			p.error("Package '%s' is invalid input. Example: 'boost:1.78.0'", input)
+			return nil
+		end
+		return input
+	end
+}
