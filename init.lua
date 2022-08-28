@@ -50,6 +50,11 @@ function m.isInstalled(prj)
 end
 
 function m.install(prj)
+	local function downloadProgress(total, current)
+		local total_kb   = math.floor(total / 1024)
+		local current_kb = math.floor(current / 1024)
+		io.write("Downloading vcpkg.exe ("..current_kb.."/"..total_kb.." KB)\r")
+	end
 	if m.isInstalled(prj) then
 		return
 	end
@@ -58,15 +63,9 @@ function m.install(prj)
 	local program_path          = path.join(install_dir, "vcpkg.exe")
 	local version_date          = m.getToolVersion(prj)
 	local url                   = "https://github.com/microsoft/vcpkg-tool/releases/download/"..version_date.."/vcpkg.exe"
-	local result, response_code = http.download(url, program_path, {progress = m.downloadProgress})
+	local result, response_code = http.download(url, program_path, {progress = downloadProgress})
 	io.write("\n")
 	if response_code ~= 200 then
 		premake.error("Failed to download vcpkg: "..result)
 	end
-end
-
-function m.downloadProgress(total, current)
-	local total_kb   = math.floor(total / 1024)
-	local current_kb = math.floor(current / 1024)
-	io.write("Downloading vcpkg.exe ("..current_kb.."/"..total_kb.." KB)\r")
 end
